@@ -1,0 +1,19 @@
+{
+  "name": "swan-sdk",
+  "version": "1.0.0",
+  "description": "Swan SDK",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getivy/swan-sdk.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/getivy/swan-sdk/issues"
+  },
+  "homepage": "https://github.com/getivy/swan-sdk#readme"
+}
