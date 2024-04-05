@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/getivy/swan-sdk#readme",
   "dependencies": {
-    "typescript": "^5.4.4"
+    "typescript": "^5.1.6"
   }
 }

@@ -13,32 +13,32 @@ export declare const InternalsBuildQuery: ({ ops, props, returns, options, scala
     props: AllTypesPropsType;
     returns: ReturnTypesType;
     ops: Operations;
-    options?: OperationOptions;
-    scalars?: ScalarDefinition;
+    options?: OperationOptions | undefined;
+    scalars?: ScalarDefinition | undefined;
 }) => (k: string, o: InputValueType | VType, p?: string, root?: boolean, vars?: Array<{
     name: string;
     graphQLType: string;
 }>) => string;
-export declare const Thunder: (fn: FetchFunction) => <O extends "query" | "mutation", SCLR extends ScalarDefinition, R extends keyof ValueTypes = GenericOperation<O>>(operation: O, graphqlOptions?: ThunderGraphQLOptions<SCLR>) => <Z extends ValueTypes[R]>(o: (Z & ValueTypes[R]) | ValueTypes[R], ops?: OperationOptions & {
+export declare const Thunder: (fn: FetchFunction) => <O extends "query" | "mutation", SCLR extends ScalarDefinition, R extends keyof ValueTypes = GenericOperation<O>>(operation: O, graphqlOptions?: ThunderGraphQLOptions<SCLR> | undefined) => <Z extends ValueTypes[R]>(o: ValueTypes[R] | (Z & ValueTypes[R]), ops?: OperationOptions & {
     variables?: Record<string, unknown>;
 }) => Promise<InputType<GraphQLTypes[R], Z, SCLR>>;
-export declare const Chain: (...options: chainOptions) => <O extends "query" | "mutation", SCLR extends ScalarDefinition, R extends keyof ValueTypes = GenericOperation<O>>(operation: O, graphqlOptions?: ThunderGraphQLOptions<SCLR>) => <Z extends ValueTypes[R]>(o: (Z & ValueTypes[R]) | ValueTypes[R], ops?: OperationOptions & {
+export declare const Chain: (...options: chainOptions) => <O extends "query" | "mutation", SCLR extends ScalarDefinition, R extends keyof ValueTypes = GenericOperation<O>>(operation: O, graphqlOptions?: ThunderGraphQLOptions<SCLR> | undefined) => <Z extends ValueTypes[R]>(o: ValueTypes[R] | (Z & ValueTypes[R]), ops?: OperationOptions & {
     variables?: Record<string, unknown>;
 }) => Promise<InputType<GraphQLTypes[R], Z, SCLR>>;
-export declare const SubscriptionThunder: (fn: SubscriptionFunction) => <O extends "query" | "mutation", SCLR extends ScalarDefinition, R extends keyof ValueTypes = GenericOperation<O>>(operation: O, graphqlOptions?: ThunderGraphQLOptions<SCLR>) => <Z extends ValueTypes[R]>(o: (Z & ValueTypes[R]) | ValueTypes[R], ops?: OperationOptions & {
-    variables?: ExtractVariables<Z>;
-}) => SubscriptionToGraphQL<Z, GraphQLTypes[R], SCLR>;
-export declare const Subscription: (...options: chainOptions) => <O extends "query" | "mutation", SCLR extends ScalarDefinition, R extends keyof ValueTypes = GenericOperation<O>>(operation: O, graphqlOptions?: ThunderGraphQLOptions<SCLR>) => <Z extends ValueTypes[R]>(o: (Z & ValueTypes[R]) | ValueTypes[R], ops?: OperationOptions & {
-    variables?: ExtractVariables<Z>;
-}) => SubscriptionToGraphQL<Z, GraphQLTypes[R], SCLR>;
-export declare const Zeus: <Z extends ValueTypes[R], O extends "query" | "mutation", R extends keyof ValueTypes = GenericOperation<O>>(operation: O, o: (Z & ValueTypes[R]) | ValueTypes[R], ops?: {
+export declare const SubscriptionThunder: (fn: SubscriptionFunction) => <O extends "query" | "mutation", SCLR extends ScalarDefinition, R extends keyof ValueTypes = GenericOperation<O>>(operation: O, graphqlOptions?: ThunderGraphQLOptions<SCLR> | undefined) => <Z extends ValueTypes[R]>(o: ValueTypes[R] | (Z & ValueTypes[R]), ops?: (OperationOptions & {
+    variables?: ExtractVariables<Z> | undefined;
+}) | undefined) => SubscriptionToGraphQL<Z, GraphQLTypes[R], SCLR>;
+export declare const Subscription: (...options: chainOptions) => <O extends "query" | "mutation", SCLR extends ScalarDefinition, R extends keyof ValueTypes = GenericOperation<O>>(operation: O, graphqlOptions?: ThunderGraphQLOptions<SCLR> | undefined) => <Z extends ValueTypes[R]>(o: ValueTypes[R] | (Z & ValueTypes[R]), ops?: (OperationOptions & {
+    variables?: ExtractVariables<Z> | undefined;
+}) | undefined) => SubscriptionToGraphQL<Z, GraphQLTypes[R], SCLR>;
+export declare const Zeus: <Z extends ValueTypes[R], O extends "query" | "mutation", R extends keyof ValueTypes = GenericOperation<O>>(operation: O, o: ValueTypes[R] | (Z & ValueTypes[R]), ops?: {
     operationOptions?: OperationOptions;
     scalars?: ScalarDefinition;
 }) => string;
 export declare const ZeusSelect: <T>() => SelectionFunction<T>;
 export declare const Selector: <T extends keyof ValueTypes>(key: T) => SelectionFunction<ValueTypes[T]>;
 export declare const TypeFromSelector: <T extends keyof ValueTypes>(key: T) => SelectionFunction<ValueTypes[T]>;
-export declare const Gql: <O extends "query" | "mutation", SCLR extends ScalarDefinition, R extends keyof ValueTypes = GenericOperation<O>>(operation: O, graphqlOptions?: ThunderGraphQLOptions<SCLR>) => <Z extends ValueTypes[R]>(o: (Z & ValueTypes[R]) | ValueTypes[R], ops?: OperationOptions & {
+export declare const Gql: <O extends "query" | "mutation", SCLR extends ScalarDefinition, R extends keyof ValueTypes = GenericOperation<O>>(operation: O, graphqlOptions?: ThunderGraphQLOptions<SCLR> | undefined) => <Z extends ValueTypes[R]>(o: ValueTypes[R] | (Z & ValueTypes[R]), ops?: OperationOptions & {
     variables?: Record<string, unknown>;
 }) => Promise<InputType<GraphQLTypes[R], Z, SCLR>>;
 export declare const ZeusScalars: SelectionFunction<ScalarCoders>;
@@ -46,7 +46,7 @@ export declare const decodeScalarsInResponse: <O extends Operations>({ response,
     ops: O;
     response: any;
     returns: ReturnTypesType;
-    scalars?: Record<string, ScalarResolver | undefined>;
+    scalars?: Record<string, ScalarResolver | undefined> | undefined;
     initialOp: keyof O;
     initialZeusQuery: InputValueType | VType;
 }) => any;
@@ -123,13 +123,13 @@ export declare const InternalArgsBuilt: ({ props, ops, returns, scalars, vars, }
     props: AllTypesPropsType;
     returns: ReturnTypesType;
     ops: Operations;
-    scalars?: ScalarDefinition;
+    scalars?: ScalarDefinition | undefined;
     vars: Array<{
         name: string;
         graphQLType: string;
     }>;
 }) => (a: ZeusArgsType, p?: string, root?: boolean) => string;
-export declare const resolverFor: <X, T extends keyof ResolverInputTypes, Z extends keyof ResolverInputTypes[T]>(type: T, field: Z, fn: (args: Required<ResolverInputTypes[T]>[Z] extends [infer Input, any] ? Input : any, source: any) => Z extends keyof ModelTypes[T] ? ModelTypes[T][Z] | Promise<ModelTypes[T][Z]> | X : never) => (args?: any, source?: any) => Z extends keyof ModelTypes[T] ? X | ModelTypes[T][Z] | Promise<ModelTypes[T][Z]> : never;
+export declare const resolverFor: <X, T extends keyof ResolverInputTypes, Z extends keyof ResolverInputTypes[T]>(type: T, field: Z, fn: (args: Required<ResolverInputTypes[T]>[Z] extends [infer Input, any] ? Input : any, source: any) => Z extends keyof ModelTypes[T] ? X | ModelTypes[T][Z] | Promise<ModelTypes[T][Z]> : never) => (args?: any, source?: any) => Z extends keyof ModelTypes[T] ? X | ModelTypes[T][Z] | Promise<ModelTypes[T][Z]> : never;
 export type UnwrapPromise<T> = T extends Promise<infer R> ? R : T;
 export type ZeusState<T extends (...args: any[]) => Promise<any>> = NonNullable<UnwrapPromise<ReturnType<T>>>;
 export type ZeusHook<T extends (...args: any[]) => Record<string, (...args: any[]) => Promise<any>>, N extends keyof ReturnType<T>> = ZeusState<ReturnType<T>[N]>;
