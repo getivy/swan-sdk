@@ -6,12 +6,11 @@ const const_1 = require("./const");
 exports.HOST = 'https://api.swan.io/sandbox-partner/graphql';
 exports.HEADERS = {};
 const apiSubscription = (options) => (query) => {
-    var _a, _b, _c;
     try {
         const queryString = options[0] + '?query=' + encodeURIComponent(query);
         const wsString = queryString.replace('http', 'ws');
-        const host = (options.length > 1 && ((_b = (_a = options[1]) === null || _a === void 0 ? void 0 : _a.websocket) === null || _b === void 0 ? void 0 : _b[0])) || wsString;
-        const webSocketOptions = ((_c = options[1]) === null || _c === void 0 ? void 0 : _c.websocket) || [host];
+        const host = (options.length > 1 && options[1]?.websocket?.[0]) || wsString;
+        const webSocketOptions = options[1]?.websocket || [host];
         const ws = new WebSocket(...webSocketOptions);
         return {
             ws,
@@ -89,7 +88,6 @@ const apiFetch = (options) => (query, variables = {}) => {
 exports.apiFetch = apiFetch;
 const InternalsBuildQuery = ({ ops, props, returns, options, scalars, }) => {
     const ibb = (k, o, p = '', root = true, vars = []) => {
-        var _a;
         const keyForPath = (0, exports.purifyGraphQLKey)(k);
         const newPath = [p, keyForPath].join(exports.SEPARATOR);
         if (!o) {
@@ -123,8 +121,8 @@ const InternalsBuildQuery = ({ ops, props, returns, options, scalars, }) => {
             })
                 .join('\n');
         }
-        const hasOperationName = root && (options === null || options === void 0 ? void 0 : options.operationName) ? ' ' + options.operationName : '';
-        const keyForDirectives = (_a = o.__directives) !== null && _a !== void 0 ? _a : '';
+        const hasOperationName = root && options?.operationName ? ' ' + options.operationName : '';
+        const keyForDirectives = o.__directives ?? '';
         const query = `{${Object.entries(o)
             .filter(([k]) => k !== '__directives')
             .map(e => ibb(...e, [p, `field<>${keyForPath}`].join(exports.SEPARATOR), false, vars))
@@ -140,9 +138,9 @@ const InternalsBuildQuery = ({ ops, props, returns, options, scalars, }) => {
 exports.InternalsBuildQuery = InternalsBuildQuery;
 const Thunder = (fn) => (operation, graphqlOptions) => (o, ops) => fn((0, exports.Zeus)(operation, o, {
     operationOptions: ops,
-    scalars: graphqlOptions === null || graphqlOptions === void 0 ? void 0 : graphqlOptions.scalars,
-}), ops === null || ops === void 0 ? void 0 : ops.variables).then(data => {
-    if (graphqlOptions === null || graphqlOptions === void 0 ? void 0 : graphqlOptions.scalars) {
+    scalars: graphqlOptions?.scalars,
+}), ops?.variables).then(data => {
+    if (graphqlOptions?.scalars) {
         return (0, exports.decodeScalarsInResponse)({
             response: data,
             initialOp: operation,
@@ -160,12 +158,12 @@ exports.Chain = Chain;
 const SubscriptionThunder = (fn) => (operation, graphqlOptions) => (o, ops) => {
     const returnedFunction = fn((0, exports.Zeus)(operation, o, {
         operationOptions: ops,
-        scalars: graphqlOptions === null || graphqlOptions === void 0 ? void 0 : graphqlOptions.scalars,
+        scalars: graphqlOptions?.scalars,
     }));
-    if ((returnedFunction === null || returnedFunction === void 0 ? void 0 : returnedFunction.on) && (graphqlOptions === null || graphqlOptions === void 0 ? void 0 : graphqlOptions.scalars)) {
+    if (returnedFunction?.on && graphqlOptions?.scalars) {
         const wrapped = returnedFunction.on;
         returnedFunction.on = (fnToCall) => wrapped((data) => {
-            if (graphqlOptions === null || graphqlOptions === void 0 ? void 0 : graphqlOptions.scalars) {
+            if (graphqlOptions?.scalars) {
                 return fnToCall((0, exports.decodeScalarsInResponse)({
                     response: data,
                     initialOp: operation,
@@ -187,8 +185,8 @@ const Zeus = (operation, o, ops) => (0, exports.InternalsBuildQuery)({
     props: const_1.AllTypesProps,
     returns: const_1.ReturnTypes,
     ops: const_1.Ops,
-    options: ops === null || ops === void 0 ? void 0 : ops.operationOptions,
-    scalars: ops === null || ops === void 0 ? void 0 : ops.scalars,
+    options: ops?.operationOptions,
+    scalars: ops?.scalars,
 })(operation, o);
 exports.Zeus = Zeus;
 const ZeusSelect = () => ((t) => t);
@@ -224,7 +222,6 @@ const decodeScalarsInResponse = ({ response, scalars, returns, ops, initialZeusQ
 exports.decodeScalarsInResponse = decodeScalarsInResponse;
 const traverseResponse = ({ resolvers, scalarPaths, }) => {
     const ibb = (k, o, p = []) => {
-        var _a;
         if (Array.isArray(o)) {
             return o.map(eachO => ibb(k, eachO, p));
         }
@@ -234,7 +231,7 @@ const traverseResponse = ({ resolvers, scalarPaths, }) => {
         const scalarPathString = p.join(exports.SEPARATOR);
         const currentScalarString = scalarPaths[scalarPathString];
         if (currentScalarString) {
-            const currentDecoder = (_a = resolvers[currentScalarString.split('.')[1]]) === null || _a === void 0 ? void 0 : _a.decode;
+            const currentDecoder = resolvers[currentScalarString.split('.')[1]]?.decode;
             if (currentDecoder) {
                 return currentDecoder(o);
             }
@@ -254,6 +251,7 @@ const traverseResponse = ({ resolvers, scalarPaths, }) => {
 exports.traverseResponse = traverseResponse;
 exports.SEPARATOR = '|';
 class GraphQLError extends Error {
+    response;
     constructor(response) {
         super('');
         this.response = response;
@@ -287,7 +285,7 @@ const PrepareScalarPaths = ({ ops, returns, }) => {
         if (typeof o === 'boolean' || typeof o === 'number' || typeof o === 'string') {
             const extractionArray = [...pOriginals, originalKey];
             const isScalar = ExtractScalar(extractionArray, returns);
-            if (isScalar === null || isScalar === void 0 ? void 0 : isScalar.startsWith('scalar')) {
+            if (isScalar?.startsWith('scalar')) {
                 const partOfTree = {
                     [[...p, k].join(exports.SEPARATOR)]: isScalar,
                 };
@@ -415,7 +413,6 @@ const ResolveFromPath = (props, returns, ops) => {
 exports.ResolveFromPath = ResolveFromPath;
 const InternalArgsBuilt = ({ props, ops, returns, scalars, vars, }) => {
     const arb = (a, p = '', root = true) => {
-        var _a, _b;
         if (typeof a === 'string') {
             if (a.startsWith(exports.START_VAR_NAME)) {
                 const [varName, graphQLType] = a.replace(exports.START_VAR_NAME, '$').split(exports.GRAPHQL_TYPE_SEPARATOR);
@@ -439,7 +436,7 @@ const InternalArgsBuilt = ({ props, ops, returns, scalars, vars, }) => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const [_, ...splittedScalar] = checkType.split('.');
             const scalarKey = splittedScalar.join('.');
-            return ((_b = (_a = scalars === null || scalars === void 0 ? void 0 : scalars[scalarKey]) === null || _a === void 0 ? void 0 : _a.encode) === null || _b === void 0 ? void 0 : _b.call(_a, a)) || JSON.stringify(a);
+            return scalars?.[scalarKey]?.encode?.(a) || JSON.stringify(a);
         }
         if (Array.isArray(a)) {
             return `[${a.map(arr => arb(arr, p, false)).join(', ')}]`;
